@@ -1,0 +1,441 @@
+openapi: 3.0.3
+info:
+  title: Assignment Hub API
+  description: |
+    API для преподавательской платформы управления учебными заданиями и автопроверки решений.
+    Позволяет регистрировать домашние задания (включая загрузку чертежей и блок-схем к условию),
+    принимать файлы решений от студентов и генерировать отчеты об успеваемости и сложности задач.
+  version: 1.0.0
+  contact:
+    name: EdTech Core Team
+    email: support@edtech.example.com
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Локальный сервер разработки
+
+tags:
+  - name: Assignments
+    description: Управление учебными заданиями
+  - name: Submissions
+    description: Управление попытками сдачи решений студентов
+  - name: Analytics
+    description: Сбор аналитики сложности учебного материала
+
+paths:
+  /assignments:
+    post:
+      tags:
+        - Assignments
+      summary: Создать новое задание
+      description: Добавляет текстовое условие домашнего задания в систему без схемы. Изображение схемы загружается на следующем шаге.
+      operationId: createAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentCreate'
+      responses:
+        '201':
+          description: Задание успешно добавлено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentIdResponse'
+        '400':
+          description: Ошибка валидации параметров запроса.
+
+    get:
+      tags:
+        - Assignments
+      summary: Получить список всех заданий
+      description: Возвращает список всех зарегистрированных в системе задач.
+      operationId: getAllAssignments
+      responses:
+        '200':
+          description: Список задач получен.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assignment'
+
+  /assignments/{assignment_id}:
+    get:
+      tags:
+        - Assignments
+      summary: Получить подробные условия задания
+      description: Возвращает карточку конкретного учебного задания.
+      operationId: getAssignmentById
+      parameters:
+        - $ref: '#/components/parameters/AssignmentId'
+      responses:
+        '200':
+          description: Условия задания успешно получены.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '404':
+          description: Задание не найдено.
+
+    put:
+      tags:
+        - Assignments
+      summary: Обновить параметры задания
+      description: Позволяет отредактировать текст условия, уровень сложности или максимальный балл.
+      operationId: updateAssignment
+      parameters:
+        - $ref: '#/components/parameters/AssignmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentCreate'
+      responses:
+        '200':
+          description: Параметры задания успешно обновлены.
+        '404':
+          description: Задание не найдено.
+
+    delete:
+      tags:
+        - Assignments
+      summary: Удалить задание
+      description: Удаляет задание из системы. Если студенты уже сдавали решения, может сработать ограничение внешнего ключа.
+      operationId: deleteAssignment
+      parameters:
+        - $ref: '#/components/parameters/AssignmentId'
+      responses:
+        '204':
+          description: Задание успешно удалено.
+        '404':
+          description: Задание не найдено.
+
+  /assignments/{assignment_id}/image:
+    put:
+      tags:
+        - Assignments
+      summary: Загрузить блок-схему или формулу к заданию
+      description: Привязывает файл графического условия к конкретному заданию.
+      operationId: uploadAssignmentImage
+      parameters:
+        - $ref: '#/components/parameters/AssignmentId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Файл изображения (JPEG или PNG)
+      responses:
+        '200':
+          description: Графическое условие успешно загружено.
+        '404':
+          description: Задание не найдено.
+
+    get:
+      tags:
+        - Assignments
+      summary: Получить графическое условие задания
+      description: Возвращает файл изображения схемы или формулы с соответствующим Content-Type заголовком.
+      operationId: getAssignmentImage
+      parameters:
+        - $ref: '#/components/parameters/AssignmentId'
+      responses:
+        '200':
+          description: Изображение получено.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Изображение не найдено.
+
+  /assignments/{assignment_id}/submissions:
+    get:
+      tags:
+        - Assignments
+      summary: Получить историю попыток сдачи по конкретной задаче
+      description: Используется преподавателями для просмотра всех присланных студенческих решений по одной задаче.
+      operationId: getSubmissionsByAssignment
+      parameters:
+        - $ref: '#/components/parameters/AssignmentId'
+      responses:
+        '200':
+          description: Список решений успешно получен.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submission'
+        '404':
+          description: Задание не найдено.
+
+  /submissions:
+    post:
+      tags:
+        - Submissions
+      summary: Отправить попытку решения
+      description: Регистрирует отправку работы студентом на проверку.
+      operationId: createSubmission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionCreate'
+      responses:
+        '201':
+          description: Решение успешно принято на автопроверку.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionIdResponse'
+        '400':
+          description: Некорректные параметры или неверный assignment_id.
+
+  /submissions/{submission_id}:
+    get:
+      tags:
+        - Submissions
+      summary: Получить данные попытки сдачи
+      description: Возвращает детали отправленного решения и результаты его оценивания.
+      operationId: getSubmissionById
+      parameters:
+        - $ref: '#/components/parameters/SubmissionId'
+      responses:
+        '200':
+          description: Данные попытки сдачи успешно получены.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+        '404':
+          description: Попытка сдачи не найдена.
+
+    put:
+      tags:
+        - Submissions
+      summary: Изменить данные попытки сдачи
+      description: Позволяет скорректировать оценку или обновить код решения.
+      operationId: updateSubmission
+      parameters:
+        - $ref: '#/components/parameters/SubmissionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmissionCreate'
+      responses:
+        '200':
+          description: Попытка сдачи успешно обновлена.
+        '404':
+          description: Попытка сдачи не найдена.
+
+    delete:
+      tags:
+        - Submissions
+      summary: Удалить запись попытки сдачи
+      description: Удаляет историю решения из системы.
+      operationId: deleteSubmission
+      parameters:
+        - $ref: '#/components/parameters/SubmissionId'
+      responses:
+        '204':
+          description: Попытка сдачи успешно удалена.
+        '404':
+          description: Запись не найдена.
+
+  /analytics/summary:
+    get:
+      tags:
+        - Analytics
+      summary: Получить сводный аналитический отчет сложности заданий
+      description: Выполняет тяжелый объединяющий запрос для ранжирования задач по уровню сложности с вычислением среднего балла и попыток.
+      operationId: getAnalyticsSummary
+      responses:
+        '200':
+          description: Аналитический отчет успеваемости успешно сформирован.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssignmentAnalytics'
+
+components:
+  parameters:
+    AssignmentId:
+      name: assignment_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SubmissionId:
+      name: submission_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    AssignmentCreate:
+      type: object
+      required:
+        - title
+        - description
+        - difficulty
+        - max_score
+      properties:
+        title:
+          type: string
+          example: "Разработка бэкенда"
+        description:
+          type: string
+          example: "Напишите REST API сервис с использованием СУБД PostgreSQL..."
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+          example: "medium"
+        max_score:
+          type: integer
+          minimum: 1
+          example: 10
+
+    AssignmentIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "c7e1b21a-6d8c-4f9e-8a1a-3e2f4b0e8c7d"
+
+    Assignment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "c7e1b21a-6d8c-4f9e-8a1a-3e2f4b0e8c7d"
+        title:
+          type: string
+          example: "Разработка бэкенда"
+        description:
+          type: string
+          example: "Напишите REST API сервис с использованием СУБД PostgreSQL..."
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+          example: "medium"
+        max_score:
+          type: integer
+          example: 10
+        image_url:
+          type: string
+          example: "/api/v1/assignments/c7e1b21a-6d8c-4f9e-8a1a-3e2f4b0e8c7d/image"
+
+    SubmissionCreate:
+      type: object
+      required:
+        - assignment_id
+        - student_id
+        - submitted_code
+        - score
+      properties:
+        assignment_id:
+          type: string
+          format: uuid
+          example: "c7e1b21a-6d8c-4f9e-8a1a-3e2f4b0e8c7d"
+        student_id:
+          type: string
+          format: uuid
+          example: "d1a5e1e0-7c1b-4f9e-8a1a-7e3f8b0e4e7d"
+        submitted_code:
+          type: string
+          example: "package main\n\nimport \"fmt\"..."
+        score:
+          type: integer
+          minimum: 0
+          example: 9
+        attempts_count:
+          type: integer
+          minimum: 1
+          example: 2
+
+    SubmissionIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f8d3d920-56ef-46c9-a9a3-5c76503c14ff"
+
+    Submission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f8d3d920-56ef-46c9-a9a3-5c76503c14ff"
+        assignment_id:
+          type: string
+          format: uuid
+          example: "c7e1b21a-6d8c-4f9e-8a1a-3e2f4b0e8c7d"
+        student_id:
+          type: string
+          format: uuid
+          example: "d1a5e1e0-7c1b-4f9e-8a1a-7e3f8b0e4e7d"
+        submitted_code:
+          type: string
+          example: "package main\n\nimport \"fmt\"..."
+        score:
+          type: integer
+          example: 9
+        attempts_count:
+          type: integer
+          example: 2
+
+    AssignmentAnalytics:
+      type: object
+      properties:
+        assignment_id:
+          type: string
+          format: uuid
+          example: "c7e1b21a-6d8c-4f9e-8a1a-3e2f4b0e8c7d"
+        title:
+          type: string
+          example: "Разработка бэкенда"
+        difficulty:
+          type: string
+          example: "medium"
+        total_submissions:
+          type: integer
+          example: 85
+        average_score:
+          type: number
+          example: 7.8
+        average_attempts:
+          type: number
+          example: 1.8
+        success_rate_percentage:
+          type: number
+          example: 82.5
