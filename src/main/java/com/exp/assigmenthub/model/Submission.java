@@ -6,7 +6,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "submissions")
 public class Submission {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -15,14 +14,50 @@ public class Submission {
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Student student;
+    private String studentEmail;
 
     @Column(columnDefinition = "TEXT")
     private String submittedCode;
 
     private Integer score;
 
-    private Integer attemptsCount;
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Assignment getAssignment() {
+        return assignment;
+    }
+
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
+    }
+
+    public String getStudentEmail() {
+        return studentEmail;
+    }
+
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
+    }
+
+    public String getSubmittedCode() {
+        return submittedCode;
+    }
+
+    public void setSubmittedCode(String submittedCode) {
+        this.submittedCode = submittedCode;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
 }
