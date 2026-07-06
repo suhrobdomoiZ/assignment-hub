@@ -6,18 +6,14 @@ import java.util.UUID;
 @Entity
 @Table(name = "submissions")
 public class Submission {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignment_id")
-    private Assignment assignment;
+    @Column(name = "assignment_id")
+    private UUID assignmentId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @Column(name = "student_id")
+    private UUID studentId;
 
     @Column(columnDefinition = "TEXT")
     private String submittedCode;
@@ -25,4 +21,52 @@ public class Submission {
     private Integer score;
 
     private Integer attemptsCount;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getAssignmentId() {
+        return assignmentId;
+    }
+
+    public void setAssignmentId(UUID assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
+    public UUID getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(UUID studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getSubmittedCode() {
+        return submittedCode;
+    }
+
+    public void setSubmittedCode(String submittedCode) {
+        this.submittedCode = submittedCode;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getAttemptsCount() {
+        return attemptsCount;
+    }
+
+    public void setAttemptsCount(Integer attemptsCount) {
+        this.attemptsCount = attemptsCount;
+    }
 }
