@@ -20,7 +20,7 @@ public class Assignment {
     private Difficulty difficulty;
 
     @Column(nullable = false)
-    private int maxScore;
+    private Integer maxScore;
 
     @Column(nullable = true)
     private String imageURL;
@@ -57,11 +57,11 @@ public class Assignment {
         this.difficulty = difficulty;
     }
 
-    public int getMaxScore() {
+    public Integer getMaxScore() {
         return maxScore;
     }
 
-    public void setMaxScore(int maxScore) {
+    public void setMaxScore(Integer maxScore) {
         this.maxScore = maxScore;
     }
 
