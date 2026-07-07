@@ -1,10 +1,12 @@
 package com.exp.assigmenthub.service;
 
 import com.exp.assigmenthub.dto.AssignmentCreate;
+import com.exp.assigmenthub.dto.AssignmentIdResponse;
 import com.exp.assigmenthub.model.Assignment;
 import com.exp.assigmenthub.model.Submission;
 import com.exp.assigmenthub.repository.AssignmentRepository;
 import com.exp.assigmenthub.repository.SubmissionRepository;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +15,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
@@ -23,14 +26,16 @@ public class AssignmentService {
         this.submissionRepository = submissionRepository;
     }
 
-    public Assignment createAssignment(AssignmentCreate dto) {
+    public AssignmentIdResponse createAssignment(AssignmentCreate dto) {
         Assignment assignment = new Assignment();
-        assignment.setId(UUID.randomUUID());
+        assignment.setId(UUID.randomUUID()); // или пусть БД генерирует через @GeneratedValue
         assignment.setTitle(dto.getTitle());
         assignment.setDescription(dto.getDescription());
         assignment.setDifficulty(dto.getDifficulty());
         assignment.setMaxScore(dto.getMaxScore());
-        return assignmentRepository.save(assignment);
+        assignmentRepository.save(assignment);
+
+        return new AssignmentIdResponse(assignment.getId());
     }
 
     public List<Assignment> getAll() {
