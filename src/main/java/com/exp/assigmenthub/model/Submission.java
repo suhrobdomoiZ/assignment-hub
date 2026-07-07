@@ -9,18 +9,16 @@ public class Submission {
     @Id
     private UUID id;
 
-    @Column(name = "assignment_id")
-    private UUID assignmentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 
-    @Column(name = "student_id")
-    private UUID studentId;
+    private String studentEmail;
 
     @Column(columnDefinition = "TEXT")
     private String submittedCode;
 
     private Integer score;
-
-    private Integer attemptsCount;
 
     public UUID getId() {
         return id;
@@ -30,20 +28,20 @@ public class Submission {
         this.id = id;
     }
 
-    public UUID getAssignmentId() {
-        return assignmentId;
+    public Assignment getAssignment() {
+        return assignment;
     }
 
-    public void setAssignmentId(UUID assignmentId) {
-        this.assignmentId = assignmentId;
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
     }
 
-    public UUID getStudentId() {
-        return studentId;
+    public String getStudentEmail() {
+        return studentEmail;
     }
 
-    public void setStudentId(UUID studentId) {
-        this.studentId = studentId;
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
     }
 
     public String getSubmittedCode() {
@@ -60,13 +58,5 @@ public class Submission {
 
     public void setScore(Integer score) {
         this.score = score;
-    }
-
-    public Integer getAttemptsCount() {
-        return attemptsCount;
-    }
-
-    public void setAttemptsCount(Integer attemptsCount) {
-        this.attemptsCount = attemptsCount;
     }
 }

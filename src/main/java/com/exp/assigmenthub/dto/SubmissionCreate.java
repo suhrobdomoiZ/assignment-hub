@@ -5,7 +5,7 @@ import java.util.UUID;
 public class SubmissionCreate {
     private UUID assignmentId;
 
-    private UUID studentId;
+    private String studentEmail;
 
     private String submittedCode;
 
@@ -19,12 +19,12 @@ public class SubmissionCreate {
         this.assignmentId = assignmentId;
     }
 
-    public UUID getStudentId() {
-        return studentId;
+    public String getStudentEmail() {
+        return studentEmail;
     }
 
-    public void setStudentId(UUID studentId) {
-        this.studentId = studentId;
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
     }
 
     public String getSubmittedCode() {
