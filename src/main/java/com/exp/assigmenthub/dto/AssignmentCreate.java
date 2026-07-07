@@ -2,8 +2,9 @@ package com.exp.assigmenthub.dto;
 
 import com.exp.assigmenthub.model.Difficulty;
 
-public class AssigmentCreate {
+public class AssignmentCreate {
     private String title;
+    private String description;
 
     private Difficulty difficulty;
     private Integer maxScore;
@@ -30,5 +31,13 @@ public class AssigmentCreate {
 
     public void setMaxScore(Integer maxScore) {
         this.maxScore = maxScore;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -5,6 +5,10 @@ import java.util.UUID;
 public class AssignmentIdResponse {
     private UUID assignmentId;
 
+    public AssignmentIdResponse(UUID assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
     public UUID getAssignmentId() {
         return assignmentId;
     }
