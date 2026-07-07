@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS assignments(
 );
 
 CREATE TABLE IF NOT EXISTS submissions(
-    id UUID PRIMARY KEY DEFAULT UUIDV7(),
+    id UUID PRIMARY KEY,
     assignment_id UUID NOT NULL UNIQUE REFERENCES assignments(id) ON DELETE CASCADE,
     student_email VARCHAR(64) NOT NULL CHECK (student_email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
     submitted_code VARCHAR(2048) NOT NULL CHECK (submitted_code != ''),
