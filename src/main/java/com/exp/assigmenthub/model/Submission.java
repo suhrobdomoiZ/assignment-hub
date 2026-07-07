@@ -7,7 +7,6 @@ import java.util.UUID;
 @Table(name = "submissions")
 public class Submission {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
