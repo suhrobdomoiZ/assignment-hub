@@ -1,39 +1,22 @@
-package com.exp.assigmenthub.model;
+package com.exp.assigmenthub.dto;
 
-import jakarta.persistence.*;
 import java.util.UUID;
 
-@Entity
-@Table(name = "submissions")
-public class Submission {
-    @Id
-    private UUID id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignment_id")
-    private Assignment assignment;
+public class SubmissionCreate {
+    private UUID assignmentId;
 
     private String studentEmail;
 
-    @Column(columnDefinition = "TEXT")
     private String submittedCode;
 
     private Integer score;
 
-    public UUID getId() {
-        return id;
+    public UUID getAssignmentId() {
+        return assignmentId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Assignment getAssignment() {
-        return assignment;
-    }
-
-    public void setAssignment(Assignment assignment) {
-        this.assignment = assignment;
+    public void setAssignmentId(UUID assignmentId) {
+        this.assignmentId = assignmentId;
     }
 
     public String getStudentEmail() {

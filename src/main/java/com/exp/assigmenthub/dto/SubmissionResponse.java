@@ -1,23 +1,20 @@
-package com.exp.assigmenthub.model;
+package com.exp.assigmenthub.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
-@Entity
-@Table(name = "submissions")
-public class Submission {
-    @Id
+public class SubmissionResponse {
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignment_id")
-    private Assignment assignment;
+    @JsonProperty("assignment_id")
+    private UUID assignmentId;
 
+    @JsonProperty("student_email")
     private String studentEmail;
 
-    @Column(columnDefinition = "TEXT")
+    @JsonProperty("submitted_code")
     private String submittedCode;
-
     private Integer score;
 
     public UUID getId() {
@@ -28,12 +25,12 @@ public class Submission {
         this.id = id;
     }
 
-    public Assignment getAssignment() {
-        return assignment;
+    public UUID getAssignmentId() {
+        return assignmentId;
     }
 
-    public void setAssignment(Assignment assignment) {
-        this.assignment = assignment;
+    public void setAssignmentId(UUID assignmentId) {
+        this.assignmentId = assignmentId;
     }
 
     public String getStudentEmail() {
