@@ -40,17 +40,19 @@ services:
     environment:
       JAVA_TOOL_OPTIONS: "-Xms2g -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100"
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+    deploy:
+      resources:
+        limits:
+          memory: "6G"
+          cpus: "3"
+        reservations:
+          memory: "6G"
+          cpus: "3"
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - uploads_data:/app/uploads
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -q --spider http://localhost:8080/health || exit 1" ]
-      interval: 20s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
     logging:
       driver: json-file
       options:
@@ -63,13 +65,10 @@ services:
       - "81:81"
       - "443:443"
     restart: unless-stopped
-    depends_on:
-      backend:
-        condition: service_healthy
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
-      - ./certs/ca.crt:/etc/nginx/certs/ca.crt:ro
+      - ./logs:/var/log/nginx
     deploy:
       resources:
         limits:
