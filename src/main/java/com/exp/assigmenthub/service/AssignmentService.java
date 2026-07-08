@@ -2,11 +2,13 @@ package com.exp.assigmenthub.service;
 
 import com.exp.assigmenthub.dto.AssignmentCreate;
 import com.exp.assigmenthub.dto.AssignmentIdResponse;
+import com.exp.assigmenthub.dto.SubmissionResponse;
 import com.exp.assigmenthub.model.Assignment;
 import com.exp.assigmenthub.model.Submission;
 import com.exp.assigmenthub.repository.AssignmentRepository;
 import com.exp.assigmenthub.repository.SubmissionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,7 +45,7 @@ public class AssignmentService {
     }
 
     public Assignment getById(UUID id) {
-        return assignmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        return assignmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Assignment not found"));
     }
 
     public Assignment update(UUID id, Assignment dto) {
@@ -60,7 +62,7 @@ public class AssignmentService {
         assignmentRepository.delete(assignment);
     }
 
-    public void  uploadImage(UUID id, byte[] imageBytes) throws IOException {
+    public void uploadImage(UUID id, byte[] imageBytes) throws IOException {
         Assignment assignment = getById(id);
         File dir = new File(uploadDir);
         if (!dir.exists()) {
@@ -85,6 +87,4 @@ public class AssignmentService {
     public List<Submission> getSubmissionsByAssignmentId(UUID id) {
         return submissionRepository.findByAssignmentId(id);
     }
-
-
 }
