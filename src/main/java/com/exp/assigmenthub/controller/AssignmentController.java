@@ -2,9 +2,11 @@ package com.exp.assigmenthub.controller;
 
 import com.exp.assigmenthub.dto.AssignmentCreate;
 import com.exp.assigmenthub.dto.AssignmentIdResponse;
+import com.exp.assigmenthub.dto.SubmissionResponse;
 import com.exp.assigmenthub.model.Assignment;
 import com.exp.assigmenthub.model.Submission;
 import com.exp.assigmenthub.service.AssignmentService;
+import com.exp.assigmenthub.service.SubmissionService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +25,11 @@ import java.util.UUID;
 @RequestMapping("/api/v1/assignments")
 public class AssignmentController {
     private final AssignmentService assignmentService;
+    private final SubmissionService submissionService;
 
-    public AssignmentController(AssignmentService assignmentService) {
+    public AssignmentController(AssignmentService assignmentService, SubmissionService submissionService) {
         this.assignmentService = assignmentService;
+        this.submissionService = submissionService;
     }
 
     @PostMapping
@@ -71,7 +75,10 @@ public class AssignmentController {
     }
 
     @GetMapping("/{assignment_id}/submissions")
-    public ResponseEntity<List<Submission>> getSubmissions(@PathVariable("assignment_id") UUID id) {
-        return ResponseEntity.ok(assignmentService.getSubmissionsByAssignmentId(id));
+    public ResponseEntity<List<SubmissionResponse>> getSubmissionsByAssignmentId(
+            @PathVariable("assignment_id") UUID assignmentId) {
+
+        List<SubmissionResponse> submissions = submissionService.getByAssignmentId(assignmentId);
+        return ResponseEntity.ok(submissions);
     }
 }

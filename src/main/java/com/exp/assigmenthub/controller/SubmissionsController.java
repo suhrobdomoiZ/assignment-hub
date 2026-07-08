@@ -1,7 +1,7 @@
 package com.exp.assigmenthub.controller;
 
 import com.exp.assigmenthub.dto.SubmissionCreate;
-import com.exp.assigmenthub.model.Submission;
+import com.exp.assigmenthub.dto.SubmissionResponse;
 import com.exp.assigmenthub.service.SubmissionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +21,17 @@ public class SubmissionsController {
 
     @PostMapping
     public ResponseEntity<Map<String, UUID>> create(@RequestBody SubmissionCreate dto) {
-        Submission created = submissionService.create(dto);
+        SubmissionResponse created = submissionService.create(dto);
         return new ResponseEntity<>(Map.of("id", created.getId()), HttpStatus.CREATED);
     }
 
     @GetMapping("/{submission_id}")
-    public ResponseEntity<Submission> getById(@PathVariable("submission_id") UUID id) {
+    public ResponseEntity<SubmissionResponse> getById(@PathVariable("submission_id") UUID id) {
         return ResponseEntity.ok(submissionService.getById(id));
     }
 
     @PutMapping("/{submission_id}")
-    public ResponseEntity<Submission> update(@PathVariable("submission_id") UUID id, @RequestBody SubmissionCreate dto) {
+    public ResponseEntity<SubmissionResponse> update(@PathVariable("submission_id") UUID id, @RequestBody SubmissionCreate dto) {
         return ResponseEntity.ok(submissionService.update(id, dto));
     }
 
