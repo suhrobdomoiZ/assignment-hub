@@ -37,3 +37,8 @@ out/
 .vscode/
 
 swagger.yml
+
+./data
+./letsencrypt
+./logs
+./certs
