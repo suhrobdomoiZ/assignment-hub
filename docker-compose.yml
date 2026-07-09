@@ -12,14 +12,6 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql
-    deploy:
-      resources:
-        limits:
-          memory: "1G"
-          cpus: "2"
-        reservations:
-          memory: "1G"
-          cpus: "2"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -40,14 +32,6 @@ services:
     environment:
       JAVA_TOOL_OPTIONS: "-Xms2g -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100"
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
-    deploy:
-      resources:
-        limits:
-          memory: "6G"
-          cpus: "3"
-        reservations:
-          memory: "6G"
-          cpus: "3"
     depends_on:
       db:
         condition: service_healthy
@@ -69,11 +53,6 @@ services:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
       - ./logs:/var/log/nginx
-    deploy:
-      resources:
-        limits:
-          memory: "1G"
-          cpus: "2"
     logging:
       driver: json-file
       options:
