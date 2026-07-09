@@ -22,7 +22,7 @@ public class Assignment {
     @Column(nullable = false)
     private Integer maxScore;
 
-    @Column(nullable = true)
+    @Column(name = "image_url", nullable = true)
     private String imageURL;
 
     public UUID getId() {
