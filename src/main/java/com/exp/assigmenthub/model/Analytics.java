@@ -1,8 +1,11 @@
 package com.exp.assigmenthub.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Immutable;
+
 import java.util.UUID;
 @Entity
+@Immutable
 @Table(name = "assignment_analytics_mv")
 public class Analytics {
     @Id

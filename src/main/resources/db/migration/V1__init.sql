@@ -1,10 +1,8 @@
-CREATE TYPE DIFFICULTY AS ENUM ('easy', 'medium', 'hard');
-
 CREATE TABLE IF NOT EXISTS assignments(
     id UUID PRIMARY KEY DEFAULT UUIDV7(),
     title VARCHAR(128) NOT NULL CHECK (title != ''),
     description TEXT NOT NULL CHECK (description != ''),
-    difficulty DIFFICULTY NOT NULL,
+    difficulty VARCHAR(255) NOT NULL,
     max_score INTEGER NOT NULL CHECK (max_score > 0),
     image_url VARCHAR(1024)
 );
