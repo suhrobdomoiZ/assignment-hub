@@ -53,6 +53,7 @@ services:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
       - ./logs:/var/log/nginx
+      - ./certs/ca.crt:/etc/nginx/certs/ca.crt:ro
     logging:
       driver: json-file
       options:
